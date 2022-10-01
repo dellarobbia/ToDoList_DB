@@ -30,13 +30,13 @@ public class UserList implements UserLists{
     public UserList(ArrayList<UserListItem> userListItems) {setUserListItems(userListItems);}
 
     @Override
-    public void addUserListItem(int position, UserListItem newUserListItem) {
-
+    public void addUserListItem(UserListItem newUserListItem) {
+        userListItems.add(newUserListItem);
     }
 
     @Override
     public void removeUserListItem(int itemPosition) {
-
+        userListItems.remove(itemPosition);
     }
 
     @Override

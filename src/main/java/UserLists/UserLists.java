@@ -8,10 +8,9 @@ package UserLists;
 public interface UserLists {
     /**
      * Add a new UserListItem to the UserList
-     * @param position integer representing the position in the UserList the new item will exist in
      * @param newUserListItem New item being added to the UserList
      */
-    public void addUserListItem(int position, UserListItem newUserListItem);
+    public void addUserListItem(UserListItem newUserListItem);
 
     /**
      * Remove an existing UserListItem from the UserList
