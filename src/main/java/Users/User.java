@@ -1,6 +1,5 @@
 package Users;
 
-import java.util.ArrayList;
 import UserLists.UserLists;
 
 /**
@@ -9,7 +8,8 @@ import UserLists.UserLists;
 public class User {
     //Properties
     private int userID;
-    private ArrayList<UserLists> userLists;
+    private String userName;
+    private int userListID;
 
     //Getters & Setters
     public int getUserID(){
@@ -19,24 +19,21 @@ public class User {
         this.userID = userID;
     }
 
-    public ArrayList<UserLists> getUserLists(){
-        return userLists;
-    }
-    public void setUserLists(ArrayList<UserLists> userLists){
-        this.userLists = userLists;
-    }
-    public void setUserLists(){
-        userLists = new ArrayList<>();
-    }
+    public String getUserName() {return userName;}
+    public void setUserName(String userName) {this.userName = userName;}
+
+    public int getUserListID() {return userListID;}
+    public void setUserListID(int userListID) {this.userListID = userListID;}
 
     //Constructors
-    public User(int userID, ArrayList<UserLists> userLists){
+    public User(int userID, String userName, int userListID){
         setUserID(userID);
-        setUserLists(userLists);
+        setUserName(userName);
+        setUserListID(userListID);
+    }
+    public User(){
+
     }
 
     //Methods
-    public void addUserList(UserLists userList){
-        userLists.add(userList);
-    }
 }
