@@ -7,9 +7,16 @@ package UserLists;
 
 public class UserListItem {
     //Properties
+    private int itemID;
     private String itemDescription;
 
     //Getters & Setters
+    public int getItemID(){
+        return itemID;
+    }
+    public void setItemID(int itemID){
+        this.itemID = itemID;
+    }
     public String getItemDescription() {
         return itemDescription;
     }

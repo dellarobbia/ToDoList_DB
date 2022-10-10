@@ -1,6 +1,5 @@
 package UserLists;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -9,9 +8,12 @@ import java.util.ArrayList;
  */
 public class UserList implements UserLists{
     //Properties
+    private int userListID;
     private ArrayList<UserListItem> userListItems;
 
     //Getters & Setters
+    public int getUserListID(){return userListID;}
+    public void setUserListID(int userListID){this.userListID = userListID;}
     public ArrayList<UserListItem> getUserListItems() {return userListItems;}
     public void setUserListItems(ArrayList<UserListItem> userListItems) {this.userListItems = userListItems;}
     public void setUserListItems() {this.userListItems = new ArrayList<UserListItem>();}
@@ -41,6 +43,10 @@ public class UserList implements UserLists{
 
     @Override
     public void displayUserList() {
-
+        int displayNumber = 0;
+        for(int i = 0; i < userListItems.size(); i++){
+            displayNumber = i + 1;
+            System.out.println(displayNumber + ": " + userListItems.get(i).toString());
+        }
     }
 }
