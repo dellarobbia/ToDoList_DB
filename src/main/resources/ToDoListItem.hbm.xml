@@ -13,7 +13,7 @@
         </id>
 
         <property name = "itemDescription" column = "item_description" type="string"/>
-        <property name = "dueDate" column = "item_due_date" type="date"/>
+        <property name = "dueDate" column = "item_due_date" type="string"/>
         <property name = "completed" column = "item_completed" type="boolean"/>
     </class>
 </hibernate-mapping>
