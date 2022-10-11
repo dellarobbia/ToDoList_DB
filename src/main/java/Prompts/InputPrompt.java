@@ -37,7 +37,7 @@ public class InputPrompt implements Prompts{
 
     //Methods
     private void retrieveUserInput(Scanner scanner){
-        userInput = scanner.next();
+        setUserInput(scanner.nextLine());
     }
 
     /**

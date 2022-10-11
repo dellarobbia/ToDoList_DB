@@ -16,8 +16,9 @@ public class Main {
                         Please select an option:\s
                         \t1: View To-Do List
                         \t2: Add Item to To-Do List
-                        \t3: Remove Item from To-Do List
-                        \t4: Exit Program
+                        \t3: Mark Item as Complete
+                        \t4: Remove Item from To-Do List
+                        \t5: Exit Program
                         """);
 
         boolean finished = false;
@@ -28,8 +29,9 @@ public class Main {
             switch (selection) {
                 case 1 -> userList.displayUserList();
                 case 2 -> addUserItemMenu();
-                case 3 -> removeItemMenu();
-                case 4 -> finished = true;
+                case 3 -> userItemCompleteMenu();
+                case 4 -> removeItemMenu();
+                case 5 -> finished = true;
                 default -> System.out.println("Invalid selection.");
             }
         }while(!finished);
@@ -70,6 +72,25 @@ public class Main {
         userList.addUserListItem(newToDoListItem);
     }
 
+    private static void userItemCompleteMenu(){
+        //Prompts
+        InputPrompt userItemCompletePrompt = new InputPrompt("Which item was completed?");
+
+        //Display userList so the user can see it's current state
+        userList.displayUserList();
+
+        //Display prompt
+        userItemCompletePrompt.displayPrompt();
+        int userItemComplete = Integer.parseInt(userItemCompletePrompt.getUserInput()) - 1;
+
+        //Attempt to mark the item as complete
+        if(userItemComplete < userList.getUserListItems().size() && userItemComplete >=0){
+            userList.getUserListItems().get(userItemComplete).setCompleted(true);
+        } else {
+            System.out.println("Invalid selection.");
+        }
+    }
+
     private static void removeItemMenu(){
         //Prompts
         InputPrompt removeItemPositionPrompt = new InputPrompt(
@@ -85,6 +106,7 @@ public class Main {
         int positionSelection;
         boolean finished = false;
 
+        userList.displayUserList();
         do{
             removeItemPositionPrompt.displayPrompt();
             positionSelection = Integer.parseInt(removeItemPositionPrompt.getUserInput()) - 1;
