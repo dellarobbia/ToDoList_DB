@@ -1,7 +1,5 @@
 package Users;
 
-import UserLists.UserLists;
-
 /**
  * Represents a user capable of creating their own list
  */
