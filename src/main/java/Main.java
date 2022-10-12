@@ -1,5 +1,11 @@
 import Prompts.*;
 import UserLists.*;
+import Users.User;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 /**
  * This version of the ToDoList program uses a MySQL database to store ToDoList items
@@ -7,6 +13,31 @@ import UserLists.*;
  * For CEN-4025C
  */
 public class Main {
+    static Connection mySQLConnection;
+
+    static {
+        try {
+            mySQLConnection = connectToDB();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static ArrayList<User> users;
+
+    static {
+        try {
+            users = loadUsers();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    static User user = selectUser();
     static UserList userList = loadUserList();
     static int selection;
 
@@ -37,12 +68,18 @@ public class Main {
         }while(!finished);
     }
 
-    /**
-     * Default UserList builder
-     * @return A new, empty UserList object
-     */
+    private static Connection connectToDB() throws SQLException, ClassNotFoundException {
+        Connection newConnection = null;
+        Class.forName("com.mysql.jdbc.Driver");
+        newConnection = DriverManager.getConnection("jdbc:mysql://localhost/todolist_db", "ToDoListApp", "Java123");
+        return newConnection;
+    }
+
+    private static ArrayList<User> loadUsers() throws SQLException, ClassNotFoundException {
+        return UserQueries.query_AllUsers(connectToDB());
+    }
     private static UserList loadUserList(){
-        return new UserList();
+        return UserListQueries.query_getList(user.getUserID());
     }
 
     private static void addUserItemMenu(){
