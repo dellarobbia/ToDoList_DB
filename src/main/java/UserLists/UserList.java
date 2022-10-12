@@ -29,7 +29,10 @@ public class UserList implements UserLists{
      * Construct a UserList using an existing ArrayList
      * @param userListItems ArrayList of user-created items
      */
-    public UserList(ArrayList<ToDoListItem> userListItems) {setUserListItems(userListItems);}
+    public UserList(int userListID, ArrayList<ToDoListItem> userListItems) {
+        setUserListID(userListID);
+        setUserListItems(userListItems);
+    }
 
     @Override
     public void addUserListItem(ToDoListItem newUserListItem) {

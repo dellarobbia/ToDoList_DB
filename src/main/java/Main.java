@@ -37,8 +37,19 @@ public class Main {
         }
     }
 
-    static User user = selectUser();
-    static UserList userList = loadUserList();
+    static User user;
+    static UserList userList;
+
+    static {
+        try {
+            userList = loadUserList();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     static int selection;
 
     public static void main(String[] args){
@@ -78,8 +89,8 @@ public class Main {
     private static ArrayList<User> loadUsers() throws SQLException, ClassNotFoundException {
         return UserQueries.query_AllUsers(connectToDB());
     }
-    private static UserList loadUserList(){
-        return UserListQueries.query_getList(user.getUserID());
+    private static UserList loadUserList() throws SQLException, ClassNotFoundException {
+        return UserListQueries.query_getList(connectToDB(), user.getUserID());
     }
 
     private static void addUserItemMenu(){
