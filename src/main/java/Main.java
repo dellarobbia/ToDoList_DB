@@ -1,4 +1,6 @@
 import Prompts.*;
+import Queries.UserListQueries;
+import Queries.UserQueries;
 import UserLists.*;
 import Users.User;
 
@@ -18,39 +20,30 @@ public class Main {
     static {
         try {
             mySQLConnection = connectToDB();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    static ArrayList<User> users;
-
-    static {
-        try {
-            users = loadUsers();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
     static User user;
+
+    static {
+        try {
+            user = selectUser();
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     static UserList userList;
 
     static {
         try {
             userList = loadUserList();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
-
-    static int selection;
 
     public static void main(String[] args){
         InputPrompt mainMenu = new InputPrompt(
@@ -63,6 +56,7 @@ public class Main {
                         \t5: Exit Program
                         """);
 
+        int selection;
         boolean finished = false;
 
         do{
@@ -80,15 +74,31 @@ public class Main {
     }
 
     private static Connection connectToDB() throws SQLException, ClassNotFoundException {
-        Connection newConnection = null;
+        Connection newConnection;
         Class.forName("com.mysql.jdbc.Driver");
         newConnection = DriverManager.getConnection("jdbc:mysql://localhost/todolist_db", "ToDoListApp", "Java123");
         return newConnection;
     }
 
-    private static ArrayList<User> loadUsers() throws SQLException, ClassNotFoundException {
-        return UserQueries.query_AllUsers(connectToDB());
+    private static User selectUser() throws SQLException, ClassNotFoundException {
+        InputPrompt existingUserPrompt = new InputPrompt("""
+                Are you an existing user?
+                \t1. Yes
+                \t2. No
+                """);
+        int existingUserSelection = Integer.parseInt(existingUserPrompt.getUserInput());
+        if (existingUserSelection == 1) {
+            InputPrompt selectUserPrompt = new InputPrompt("Enter your user ID#:");
+            int userID = Integer.parseInt(selectUserPrompt.getUserInput());
+            return UserQueries.query_User(connectToDB(), userID);
+        } else {
+            InputPrompt newUserPrompt = new InputPrompt("Enter a username:");
+            String username = newUserPrompt.getUserInput();
+            UserQueries.query_insertNewUser(connectToDB(), username);
+            return UserQueries.query_User(connectToDB(), username);
+        }
     }
+
     private static UserList loadUserList() throws SQLException, ClassNotFoundException {
         return UserListQueries.query_getList(connectToDB(), user.getUserID());
     }

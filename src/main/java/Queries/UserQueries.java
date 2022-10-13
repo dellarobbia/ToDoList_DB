@@ -1,3 +1,5 @@
+package Queries;
+
 import Users.User;
 
 import java.sql.Connection;
@@ -22,6 +24,48 @@ public class UserQueries {
             }
             dbConnection.close();
             return users;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static User query_User(Connection dbConnection, int userID){
+        try{
+            PreparedStatement statement = dbConnection.prepareStatement("""
+                SELECT *
+                FROM users
+                WHERE users.user_id = ?
+            """);
+            statement.setInt(1, userID);
+
+            ResultSet results = statement.executeQuery();
+
+            User user = new User(results.getInt(1), results.getString(2));
+
+            dbConnection.close();
+
+            return user;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static User query_User(Connection dbConnection, String username){
+        try{
+            PreparedStatement statement = dbConnection.prepareStatement("""
+                SELECT *
+                FROM users
+                WHERE users.username = ?
+            """);
+            statement.setString(1, username);
+
+            ResultSet results = statement.executeQuery();
+
+            User user = new User(results.getInt(1), results.getString(2));
+
+            dbConnection.close();
+
+            return user;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
