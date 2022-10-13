@@ -1,4 +1,5 @@
 import Prompts.*;
+import Queries.ListItemQueries;
 import Queries.UserListQueries;
 import Queries.UserQueries;
 import UserLists.*;
@@ -51,8 +52,7 @@ public class Main {
                         \t1: View To-Do List
                         \t2: Add Item to To-Do List
                         \t3: Mark Item as Complete
-                        \t4: Remove Item from To-Do List
-                        \t5: Exit Program
+                        \t4: Exit Program
                         """);
 
         int selection;
@@ -62,11 +62,22 @@ public class Main {
             mainMenu.displayPrompt();
             selection = Integer.parseInt(mainMenu.getUserInput());
             switch (selection) {
-                case 1 -> userList.displayUserList();
+                case 1 -> {
+                    try {
+                        loadUserList().displayUserList();
+                    } catch (SQLException | ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
                 case 2 -> addUserItemMenu();
-                case 3 -> userItemCompleteMenu();
-                case 4 -> removeItemMenu();
-                case 5 -> finished = true;
+                case 3 -> {
+                    try {
+                        userItemCompleteMenu();
+                    } catch (SQLException | ClassNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                case 4 -> finished = true;
                 default -> System.out.println("Invalid selection.");
             }
         }while(!finished);
@@ -119,7 +130,11 @@ public class Main {
         String toDoItemDueDate;
 
         //Display the current to-do list so the user can see its current state
-        userList.displayUserList();
+        try {
+            loadUserList().displayUserList();
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
 
         //Display prompts needed to get input for the new To-Do list item
 
@@ -131,23 +146,28 @@ public class Main {
 
         //Construct the new ToDOListItem and add it to the to-do list
         ToDoListItem newToDoListItem = new ToDoListItem(toDoItemDescription, toDoItemDueDate);
-        userList.addUserListItem(newToDoListItem);
+        try {
+            ListItemQueries.query_insertNewListItem(connectToDB(), userList.getUserListID(), newToDoListItem);
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private static void userItemCompleteMenu(){
+    private static void userItemCompleteMenu() throws SQLException, ClassNotFoundException {
         //Prompts
         InputPrompt userItemCompletePrompt = new InputPrompt("Which item was completed?");
 
         //Display userList so the user can see it's current state
-        userList.displayUserList();
+        UserList userList = loadUserList();
 
         //Display prompt
+        userList.displayUserList();
         userItemCompletePrompt.displayPrompt();
         int userItemComplete = Integer.parseInt(userItemCompletePrompt.getUserInput()) - 1;
 
         //Attempt to mark the item as complete
         if(userItemComplete < userList.getUserListItems().size() && userItemComplete >=0){
-            userList.getUserListItems().get(userItemComplete).setCompleted(true);
+            ListItemQueries.query_updateCompletedStatus(connectToDB(), userList.getUserListID(), userList.getUserListItems().get(userItemComplete));
         } else {
             System.out.println("Invalid selection.");
         }
