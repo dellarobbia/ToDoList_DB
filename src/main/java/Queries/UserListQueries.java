@@ -2,7 +2,6 @@ package Queries;
 
 import UserLists.ToDoListItem;
 import UserLists.UserList;
-import Users.User;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
