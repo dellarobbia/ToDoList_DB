@@ -167,45 +167,10 @@ public class Main {
 
         //Attempt to mark the item as complete
         if(userItemComplete < userList.getUserListItems().size() && userItemComplete >=0){
+            userList.getUserListItems().get(userItemComplete).setCompleted(true);
             ListItemQueries.query_updateCompletedStatus(connectToDB(), userList.getUserListID(), userList.getUserListItems().get(userItemComplete));
         } else {
             System.out.println("Invalid selection.");
         }
-    }
-
-    private static void removeItemMenu(){
-        //Prompts
-        InputPrompt removeItemPositionPrompt = new InputPrompt(
-                "Which item will be removed?");
-        InputPrompt removeItemConfirmationPrompt = new InputPrompt(
-                """
-                        Please confirm the removal:
-                        \t1: Yes
-                        \t2: No
-                        """);
-
-        int confirmSelection;
-        int positionSelection;
-        boolean finished = false;
-
-        userList.displayUserList();
-        do{
-            removeItemPositionPrompt.displayPrompt();
-            positionSelection = Integer.parseInt(removeItemPositionPrompt.getUserInput()) - 1;
-
-            removeItemConfirmationPrompt.displayPrompt();
-            confirmSelection = Integer.parseInt(removeItemConfirmationPrompt.getUserInput());
-            switch (confirmSelection) {
-                case 1 -> {
-                    userList.removeUserListItem(positionSelection);
-                    finished = true;
-                }
-                case 2 -> {
-                    System.out.println("Removal canceled. Returning to main menu...");
-                    finished = true;
-                }
-                default -> System.out.println("Invalid selection");
-            }
-        } while(!finished);
     }
 }

@@ -24,9 +24,6 @@ public class User {
         setUserID(userID);
         setUserName(userName);
     }
-    public User(){
-
-    }
 
     //Methods
 
