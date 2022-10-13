@@ -13,7 +13,7 @@ public class UserQueries {
         try {
             ArrayList<User> users = new ArrayList<>();
             PreparedStatement statement = dbConnection.prepareStatement("""
-                    SELECT *
+                    SELECT user_id, username
                     FROM users
             """);
             ResultSet results = statement.executeQuery();
@@ -32,7 +32,7 @@ public class UserQueries {
     public static User query_User(Connection dbConnection, int userID){
         try{
             PreparedStatement statement = dbConnection.prepareStatement("""
-                SELECT *
+                SELECT user_id, username
                 FROM users
                 WHERE users.user_id = ?
             """);
@@ -40,6 +40,7 @@ public class UserQueries {
 
             ResultSet results = statement.executeQuery();
 
+            results.next();
             User user = new User(results.getInt(1), results.getString(2));
 
             dbConnection.close();
@@ -53,7 +54,7 @@ public class UserQueries {
     public static User query_User(Connection dbConnection, String username){
         try{
             PreparedStatement statement = dbConnection.prepareStatement("""
-                SELECT *
+                SELECT user_id, username
                 FROM users
                 WHERE users.username = ?
             """);
@@ -61,6 +62,7 @@ public class UserQueries {
 
             ResultSet results = statement.executeQuery();
 
+            results.next();
             User user = new User(results.getInt(1), results.getString(2));
 
             dbConnection.close();

@@ -31,4 +31,9 @@ public class User {
     }
 
     //Methods
+
+    @Override
+    public String toString(){
+        return "User " + userName + " ID# " + userID;
+    }
 }

@@ -22,21 +22,22 @@ public class UserListQueries {
 
             ResultSet results = statement.executeQuery();
 
+            results.next();
             return new UserList(
                     results.getInt(1),
-                    query_getListItems(dbConnection, results.getInt(1))
+                    query_getIncompleteListItems(dbConnection, results.getInt(1))
             );
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
-    public static ArrayList<ToDoListItem> query_getListItems(Connection dbConnection, int listID){
+    public static ArrayList<ToDoListItem> query_getIncompleteListItems(Connection dbConnection, int listID){
         try {
             PreparedStatement statement = dbConnection.prepareStatement("""
                     SELECT lists.list_id, li.item_description, li.item_due_date, li.item_completed
                     FROM lists
                     INNER JOIN list_items li on lists.list_id = li.list_id
-                    WHERE lists.list_id = ?
+                    WHERE lists.list_id = ? AND li.item_completed = FALSE
             """);
             statement.setInt(1,listID);
 
@@ -54,6 +55,37 @@ public class UserListQueries {
 
             dbConnection.close();
             return toDoListItems;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void query_insertNewList(Connection dbConnection, int userID){
+        try{
+            PreparedStatement statement = dbConnection.prepareStatement("""
+                INSERT INTO lists VALUES(NULL, ?)
+            """);
+            statement.setInt(1, userID);
+
+            statement.executeUpdate();
+            dbConnection.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void query_insertNewListItem(Connection dbConnection, int listID, ToDoListItem newItem){
+        try{
+            PreparedStatement statement = dbConnection.prepareStatement("""
+                INSERT INTO list_items VALUES(NULL, ?, ?, ?, ?)
+            """);
+            statement.setInt(1, listID);
+            statement.setString(2, newItem.getItemDescription());
+            statement.setString(3, newItem.getDueDate());
+            statement.setBoolean(4, newItem.isCompleted());
+
+            statement.executeUpdate();
+            dbConnection.close();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

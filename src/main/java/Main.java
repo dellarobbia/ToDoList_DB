@@ -7,7 +7,6 @@ import Users.User;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 /**
  * This version of the ToDoList program uses a MySQL database to store ToDoList items
@@ -46,7 +45,7 @@ public class Main {
     }
 
     public static void main(String[] args){
-        InputPrompt mainMenu = new InputPrompt(
+        InputPrompt mainMenu = new InputPrompt(user.toString() + "\n" +
                 """
                         Please select an option:\s
                         \t1: View To-Do List
@@ -75,7 +74,7 @@ public class Main {
 
     private static Connection connectToDB() throws SQLException, ClassNotFoundException {
         Connection newConnection;
-        Class.forName("com.mysql.jdbc.Driver");
+        Class.forName("com.mysql.cj.jdbc.Driver");
         newConnection = DriverManager.getConnection("jdbc:mysql://localhost/todolist_db", "ToDoListApp", "Java123");
         return newConnection;
     }
@@ -86,15 +85,20 @@ public class Main {
                 \t1. Yes
                 \t2. No
                 """);
+        existingUserPrompt.displayPrompt();
         int existingUserSelection = Integer.parseInt(existingUserPrompt.getUserInput());
         if (existingUserSelection == 1) {
             InputPrompt selectUserPrompt = new InputPrompt("Enter your user ID#:");
+            selectUserPrompt.displayPrompt();
             int userID = Integer.parseInt(selectUserPrompt.getUserInput());
             return UserQueries.query_User(connectToDB(), userID);
         } else {
             InputPrompt newUserPrompt = new InputPrompt("Enter a username:");
+            newUserPrompt.displayPrompt();
             String username = newUserPrompt.getUserInput();
             UserQueries.query_insertNewUser(connectToDB(), username);
+            User newUser = UserQueries.query_User(connectToDB(), username);
+            UserListQueries.query_insertNewList(connectToDB(), newUser.getUserID());
             return UserQueries.query_User(connectToDB(), username);
         }
     }
